@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minisweeper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-wrapper">
+        <h1>Minisweeper</h1>
+        
+        <div class="controls-bar">
+            <label for="difficulty">難度：</label>
+            <select id="difficulty">
+                <option value="easy">初級 (9x9)</option>
+                <option value="medium">中級 (16x16)</option>
+                <option value="hard">高級 (30x16)</option>
+            </select>
+            <div class="tools">
+                <button id="hint-btn" class="tool-btn">💡 提示</button>
+                <button id="solve-btn" class="tool-btn">🤖 自動推導</button>
+            </div>
+        </div>
+
+        <div id="game-container">
+            <div id="header">
+                <div id="mine-count" class="digital-display">010</div>
+                <button id="reset-btn">😊</button>
+                <div id="timer" class="digital-display">000</div>
+            </div>
+            <div id="grid"></div>
+        </div>
+        <div class="controls-hint">
+            <p><strong>左鍵:</strong> 揭開方塊 | <strong>右鍵:</strong> 插旗</p>
+        </div>
+    </div>
+
+    <!-- 遊戲結束彈窗 -->
+    <div id="modal-overlay" class="hidden">
+        <div class="modal-content">
+            <h2 id="modal-title">遊戲結束</h2>
+            <p id="modal-message">你贏了！</p>
+            <p>時間: <span id="modal-time">0</span> 秒</p>
+            <button id="modal-restart-btn">再來一局</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time ChatBot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-button" class="sidebar-button">＋ New Chat</button>
+            </div>
+            <ul id="chat-list" class="chat-list">
+                <!-- Chat sessions will be dynamically added here -->
+            </ul>
+        </aside>
+        <main class="chat-area">
+            <div class="container">
+                <div class="api-key-container">
+                    <label for="api-key">Gemini API Key:</label>
+                    <input type="password" id="api-key" placeholder="Enter your API key">
+                    <button id="save-key">Save</button>
+                </div>
+                <div class="chat-header">
+                    <h2 id="chat-title">Chat</h2>
+                    <button id="delete-chat-button" class="delete-button">🗑️</button>
+                </div>
+                <div class="chat-container">
+                    <div id="chat-history">
+                        <!-- Messages will be dynamically added here -->
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="message-input" placeholder="Type your message here..." disabled>
+                        <button id="send-button" disabled>Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
