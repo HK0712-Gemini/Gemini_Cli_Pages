@@ -44,9 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.values(state.chats).forEach(chat => {
             const li = document.createElement('li');
             li.dataset.chatId = chat.id;
-            li.textContent = chat.title;
+            
+            const span = document.createElement('span');
+            span.textContent = chat.title;
+            li.appendChild(span);
+
+            const renameBtn = document.createElement('button');
+            renameBtn.className = 'rename-btn';
+            renameBtn.innerHTML = '✏️';
+            renameBtn.style.display = 'none'; // Initially hidden
+            li.appendChild(renameBtn);
+
+            li.addEventListener('mouseenter', () => { renameBtn.style.display = 'inline-block'; });
+            li.addEventListener('mouseleave', () => { renameBtn.style.display = 'none'; });
+
             if (chat.id === state.currentChatId) {
                 li.classList.add('active');
+                renameBtn.style.display = 'inline-block';
             }
             elements.chatList.appendChild(li);
         });
@@ -215,8 +229,49 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.deleteChatButton.addEventListener('click', deleteCurrentChat);
         
         elements.chatList.addEventListener('click', (e) => {
-            if (e.target && e.target.tagName === 'LI') {
-                switchChat(e.target.dataset.chatId);
+            const renameBtn = e.target.closest('.rename-btn');
+            const li = e.target.closest('li');
+
+            if (renameBtn && li) {
+                // Handle rename button click
+                const span = li.querySelector('span');
+                if (span) {
+                    const chatId = li.dataset.chatId;
+                    const currentTitle = span.textContent;
+                    
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = currentTitle;
+                    input.className = 'rename-input';
+                    
+                    li.replaceChild(input, span);
+                    // The rename button is still there, hide it for now
+                    renameBtn.style.display = 'none';
+
+                    input.focus();
+                    input.select();
+
+                    const finishEditing = () => {
+                        const newTitle = input.value.trim();
+                        if (newTitle && newTitle !== currentTitle) {
+                            state.chats[chatId].title = newTitle;
+                            if(chatId === state.currentChatId) {
+                                elements.chatTitle.textContent = newTitle;
+                            }
+                            saveState();
+                        }
+                        renderChatList(); // Re-render to restore span and button
+                    };
+
+                    input.addEventListener('blur', finishEditing);
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') finishEditing();
+                        else if (e.key === 'Escape') renderChatList();
+                    });
+                }
+            } else if (li) {
+                // Handle chat switching
+                switchChat(li.dataset.chatId);
             }
         });
         
