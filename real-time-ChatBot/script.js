@@ -175,6 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         renderAll(); // Re-render to show user message immediately
+        saveState(); // Save immediately so user message is not lost on reload
+
         elements.messageInput.value = '';
         elements.sendButton.disabled = true;
 
@@ -189,12 +191,16 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.chatHistory.appendChild(botMessageElement);
         elements.chatHistory.scrollTop = elements.chatHistory.scrollHeight;
 
+        // Pre-create the model message in history so we can update it live
+        const modelMessage = { role: 'model', parts: [{ text: '' }] };
+        currentChat.history.push(modelMessage);
+
         let fullResponse = "";
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ apiKey: state.apiKey, history: currentChat.history }),
+                body: JSON.stringify({ apiKey: state.apiKey, history: currentChat.history.slice(0, -1) }), // Send history excluding the empty placeholder
             });
 
             if (!response.ok) throw new Error((await response.json()).error || 'Unknown error');
@@ -217,23 +223,33 @@ document.addEventListener('DOMContentLoaded', () => {
                             if (data.candidates && data.candidates[0].content.parts[0].text) {
                                 fullResponse += data.candidates[0].content.parts[0].text;
                                 contentDiv.innerHTML = marked.parse(fullResponse + ' ▌'); // Add a cursor
+                                
+                                // Update history state live
+                                modelMessage.parts[0].text = fullResponse;
                             }
                         } catch (e) { /* Ignore parsing errors on incomplete chunks */ }
                     }
                 }
             }
             contentDiv.innerHTML = marked.parse(fullResponse);
-            currentChat.history.push({ role: 'model', parts: [{ text: fullResponse }] });
+            // History is already updated live, no need to push again
 
         } catch (error) {
-            contentDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
-            currentChat.history.push({ role: 'model', parts: [{ text: `Error: ${error.message}` }] });
+            const errorMsg = `Error: ${error.message}`;
+            contentDiv.innerHTML = `<strong>${errorMsg}</strong>`;
+            // Update the placeholder with the error message
+            modelMessage.parts[0].text = errorMsg;
         } finally {
             elements.sendButton.disabled = false;
             elements.messageInput.focus();
             saveState(); // Save the complete conversation
         }
     }
+
+    // Ensure state is saved if the user reloads/closes during a stream
+    window.addEventListener('beforeunload', () => {
+        saveState();
+    });
 
     // --- Event Listeners ---
     function setupEventListeners() {
@@ -273,10 +289,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     li.replaceChild(input, span);
                     // The rename button is still there, hide it for now
-                    renameBtn.style.display = 'none';
+                    renameBtn.style.visibility = 'hidden';
 
                     input.focus();
-                    input.select();
+                    input.setSelectionRange(input.value.length, input.value.length);
 
                     const finishEditing = () => {
                         const newTitle = input.value.trim();
