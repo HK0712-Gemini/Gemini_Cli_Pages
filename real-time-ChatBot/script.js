@@ -129,11 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addMessageToHistory(role, text) {
         const messageElement = document.createElement('div');
-        messageElement.classList.add('message', role === 'user' ? 'user-message' : 'bot-message');
+        messageElement.classList.add('message', role === 'user' ? 'user' : 'bot');
         
-        const paragraph = document.createElement('p');
-        paragraph.innerHTML = marked.parse(text);
-        messageElement.appendChild(paragraph);
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('message-content');
+        contentDiv.innerHTML = marked.parse(text);
+        messageElement.appendChild(contentDiv);
         
         elements.chatHistory.appendChild(messageElement);
         elements.chatHistory.scrollTop = elements.chatHistory.scrollHeight;
@@ -161,10 +162,13 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.sendButton.disabled = true;
 
         const botMessageElement = document.createElement('div');
-        botMessageElement.classList.add('message', 'bot-message');
-        const paragraph = document.createElement('p');
-        paragraph.innerHTML = marked.parse('...');
-        botMessageElement.appendChild(paragraph);
+        botMessageElement.classList.add('message', 'bot');
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('message-content');
+        contentDiv.innerHTML = marked.parse('...');
+        botMessageElement.appendChild(contentDiv);
+        
         elements.chatHistory.appendChild(botMessageElement);
         elements.chatHistory.scrollTop = elements.chatHistory.scrollHeight;
 
@@ -195,17 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             const data = JSON.parse(jsonStr);
                             if (data.candidates && data.candidates[0].content.parts[0].text) {
                                 fullResponse += data.candidates[0].content.parts[0].text;
-                                paragraph.innerHTML = marked.parse(fullResponse + ' ▌'); // Add a cursor
+                                contentDiv.innerHTML = marked.parse(fullResponse + ' ▌'); // Add a cursor
                             }
                         } catch (e) { /* Ignore parsing errors on incomplete chunks */ }
                     }
                 }
             }
-            paragraph.innerHTML = marked.parse(fullResponse);
+            contentDiv.innerHTML = marked.parse(fullResponse);
             currentChat.history.push({ role: 'model', parts: [{ text: fullResponse }] });
 
         } catch (error) {
-            paragraph.innerHTML = `<strong>Error:</strong> ${error.message}`;
+            contentDiv.innerHTML = `<strong>Error:</strong> ${error.message}`;
             currentChat.history.push({ role: 'model', parts: [{ text: `Error: ${error.message}` }] });
         } finally {
             elements.sendButton.disabled = false;
