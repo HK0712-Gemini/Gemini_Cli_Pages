@@ -113,14 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function deleteCurrentChat() {
         const chatIdToDelete = state.currentChatId;
-        if (Object.keys(state.chats).length <= 1) {
-            alert("You can't delete the last chat!");
-            return;
-        }
-
         delete state.chats[chatIdToDelete];
-        
-        state.currentChatId = Object.keys(state.chats)[0];
+
+        const remainingChatIds = Object.keys(state.chats);
+
+        if (remainingChatIds.length > 0) {
+            state.currentChatId = remainingChatIds[0];
+        } else {
+            createNewChat(false); // Don't save yet, the outer call will save
+        }
         
         renderAll();
         saveState();
