@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatList: document.getElementById('chat-list'),
         chatTitle: document.getElementById('chat-title'),
         deleteChatButton: document.getElementById('delete-chat-button'),
+        themeToggle: document.getElementById('theme-toggle'),
     };
 
     // Application State
@@ -17,7 +18,28 @@ document.addEventListener('DOMContentLoaded', () => {
         apiKey: null,
         chats: {},
         currentChatId: null,
+        theme: 'dark',
     };
+
+    // --- Theme Management ---
+    function setTheme(theme) {
+        document.body.dataset.theme = theme;
+        state.theme = theme;
+        const themeText = elements.themeToggle.querySelector('.theme-text');
+        const sunIcon = elements.themeToggle.querySelector('.sun-icon');
+        const moonIcon = elements.themeToggle.querySelector('.moon-icon');
+
+        if (theme === 'light') {
+            themeText.textContent = 'Dark Mode';
+            sunIcon.style.display = 'none';
+            moonIcon.style.display = 'block';
+        } else {
+            themeText.textContent = 'Light Mode';
+            sunIcon.style.display = 'block';
+            moonIcon.style.display = 'none';
+        }
+        saveState();
+    }
 
     // --- State Management ---
     function saveState() {
@@ -52,15 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const renameBtn = document.createElement('button');
             renameBtn.className = 'rename-btn';
             renameBtn.innerHTML = '✏️';
-            renameBtn.style.display = 'none'; // Initially hidden
             li.appendChild(renameBtn);
-
-            li.addEventListener('mouseenter', () => { renameBtn.style.display = 'inline-block'; });
-            li.addEventListener('mouseleave', () => { renameBtn.style.display = 'none'; });
 
             if (chat.id === state.currentChatId) {
                 li.classList.add('active');
-                renameBtn.style.display = 'inline-block';
             }
             elements.chatList.appendChild(li);
         });
@@ -233,6 +250,11 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.newChatButton.addEventListener('click', () => createNewChat(true));
         elements.deleteChatButton.addEventListener('click', deleteCurrentChat);
         
+        elements.themeToggle.addEventListener('click', () => {
+            const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
         elements.chatList.addEventListener('click', (e) => {
             const renameBtn = e.target.closest('.rename-btn');
             const li = e.target.closest('li');
@@ -292,6 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initialization ---
     function init() {
         loadState();
+        setTheme(state.theme || 'dark');
         renderAll();
         setupEventListeners();
     }

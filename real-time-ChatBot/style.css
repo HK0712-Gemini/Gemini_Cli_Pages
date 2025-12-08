@@ -146,12 +146,24 @@ body {
     border-color: rgba(56, 139, 253, 0.4);
 }
 
+.chat-list li > span {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-list li:hover .rename-btn,
+.chat-list li.active .rename-btn {
+    opacity: 1;
+}
+
 .rename-btn {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 0.8rem;
-    opacity: 0.6;
+    opacity: 0; /* Hidden by default */
     transition: opacity 0.2s;
     color: var(--text-secondary);
     padding: 4px;
@@ -159,8 +171,20 @@ body {
 }
 
 .rename-btn:hover {
-    opacity: 1;
     background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.rename-input {
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-hover);
+    color: var(--text-primary);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
 }
 
 /* Main Chat Area */
@@ -473,4 +497,56 @@ body {
     .message {
         max-width: 90%;
     }
+}
+
+/* Light Theme */
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7f7f8;
+    --bg-tertiary: #eef0f2;
+    
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --text-accent: #006ce1;
+    
+    --border-color: #e1e4e8;
+    --border-hover: #d1d5da;
+    
+    --accent-primary: #007a23;
+    --accent-hover: #008a29;
+    
+    --message-user-bg: #007bff;
+    --message-bot-bg: #eef0f2;
+    --message-bot-text: #1a1a1a;
+}
+
+[data-theme="light"] .chat-header {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="light"] .rename-btn:hover {
+    background-color: var(--bg-secondary);
+}
+
+[data-theme="light"] .rename-input {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-hover);
+    color: var(--text-primary);
+}
+
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .moon-icon {
+    display: none;
+}
+
+[data-theme="light"] .sun-icon {
+    display: none;
+}
+[data-theme="light"] .moon-icon {
+    display: block;
 }
