@@ -1,2 +1,4 @@
 /real-time-ChatBot/node_modules
 /*/node_modules
+.gemini/
+gha-creds-*.json

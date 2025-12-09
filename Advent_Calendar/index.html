@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advent Calendar 2025</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="snow-container"></div>
+    <div class="container">
+        <header>
+            <h1>🎄 Advent Calendar 🎄</h1>
+            <p>Count down the days until Christmas with a daily surprise!</p>
+            <button id="reset-btn">Reset Calendar</button>
+        </header>
+        <div id="calendar" class="calendar-grid">
+            <!-- JavaScript will generate the calendar grid here -->
+        </div>
+    </div>
+
+    <!-- Modal for surprise content -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="modal-body">
+                <h2 id="modal-day">Day 1</h2>
+                <div id="modal-image"></div>
+                <p id="modal-message">Surprise content...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
